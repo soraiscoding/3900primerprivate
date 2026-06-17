@@ -17,11 +17,7 @@ def get_students():
     Route to fetch all students from the database
     return: Array of student objects
     """
-    # TODO: replace with your implementation. This is a mock response
-    return jsonify([
-        {'course': 'COMP1531', 'id': 1, 'mark': 85, 'name': 'Alice Zhang'},
-        {'course': 'COMP1531', 'id': 2, 'mark': 72, 'name': 'Bob Smith'}
-    ]), 200
+    return get_all_students()
 
 
 @app.route("/students", methods=["POST"])
@@ -35,9 +31,9 @@ def create_student():
     """
 
     # Getting the request body - replace with your implementation
-    student_data = request.json
-
-    pass
+    # sd is student data
+    sd = request.json
+    return insert_student(sd.get(name), sd.get(course), sd.get(mark))
 
 
 @app.route("/students/<int:student_id>", methods=["PUT"])
@@ -58,7 +54,7 @@ def delete_student(student_id):
     Route to delete student by id
     return: The deleted student
     """
-    pass  # replace with your implementation
+    return delete_student()
 
 
 @app.route("/stats")
@@ -67,7 +63,26 @@ def get_stats():
     Route to show the stats of all student marks 
     return: An object with the stats (count, average, min, max)
     """
-    pass  # replace with your implementation
+    all_students = get_all_students()
+    num_students = len(all_students)
+    # mini = all_students(min) i dont think thisll work
+    # maxi = all_students(max)
+    minn = None # placeholder value
+    maxx = None
+    for s in all_students:
+        total = total + s.get(mark)
+        if (s.get(mark) < minn) minn = s.get(mark)
+        if (s.get(mark) > minn) maxx = = s.get(mark)
+        num_students++
+
+    average = total/num_students
+    stats = {
+        "count": num_students,
+        "average": average,
+        "min": minn,
+        "max": maxx
+    }
+    return stats  # replace with your implementation
 
 
 @app.route("/")
