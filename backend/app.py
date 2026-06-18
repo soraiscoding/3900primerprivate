@@ -71,9 +71,9 @@ def get_stats():
     maxx = None
     for s in all_students:
         total = total + s.get(mark)
-        if (s.get(mark) < minn) minn = s.get(mark)
-        if (s.get(mark) > minn) maxx = = s.get(mark)
-        num_students++
+        if (s.get(mark) < minn): minn = s.get(mark)
+        if (s.get(mark) > minn): maxx = s.get(mark)
+        num_students += 1
 
     average = total/num_students
     stats = {

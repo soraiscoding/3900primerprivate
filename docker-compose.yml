@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:15
-    hostname: db
     environment:
       POSTGRES_USER: marksuser
       POSTGRES_PASSWORD: markspass
@@ -11,22 +10,31 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - my_db_volume:/docker-entrypoint-initdb.d/init.sql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - my_db_volume:/var/lib/postgresql/data
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports: 5000:5000
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: marksuser
+      DB_PASSWORD: markspass
+      DB_NAME: marksdb
+    ports: 
+      - "5000:5000"
     depends_on:
       - db
 
   frontend:
     # TODO: you will need to add to this
-
-      ports: 5173:8080
-      depends_on:
-      - backend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports: 
+      - "8080:5173"
 
   automark:
     build: ./automark
@@ -35,3 +43,6 @@ services:
       - db
     profiles:
       - debug
+
+volumes:
+  my_db_volume:
