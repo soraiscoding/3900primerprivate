@@ -14,12 +14,10 @@ services:
       - my_db_volume:/var/lib/postgresql/data
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     environment:
       DB_HOST: db
-      DB_PORT: 5432
+      #DB_PORT: 5432
       DB_USER: marksuser
       DB_PASSWORD: markspass
       DB_NAME: marksdb
@@ -30,11 +28,11 @@ services:
 
   frontend:
     # TODO: you will need to add to this
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    build: ./frontend
     ports: 
-      - "8080:5173"
+      - "8080:80"
+    depends_on:
+      - backend
 
   automark:
     build: ./automark
