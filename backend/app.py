@@ -63,10 +63,11 @@ def get_stats():
     Route to show the stats of all student marks 
     return: An object with the stats (count, average, min, max)
     """
-    all_students = get_all_students()
+    all_students = get_all_students() # either is None or not None
     num_students = len(all_students)
     # mini = all_students(min) i dont think thisll work
     # maxi = all_students(max)
+    average = 0
     minn = None # placeholder value
     maxx = None
     for s in all_students:
