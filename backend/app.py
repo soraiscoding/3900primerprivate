@@ -69,34 +69,18 @@ def get_stats():
     Route to show the stats of all student marks 
     return: An object with the stats (count, average, min, max)
     """
-    all_students = get_all_students() # either is None or not None
-    if (all_students is None): return 404
+    all_students = db.get_all_students() # either is None or not None
+    if not all_students: return 404
 
     # check if there is a student with a mark
-    i = 0
-    for s in all_students and int(s.get("mark")) is not None:
-        i += 1
-
-    if (i == 0): return 404
-
-    average = 0
-    total = 0
-    minn = all_students[0].get("mark") # placeholder value
-    maxx = 0
-    for s in all_students and int(s.get("mark")) is not None:
-        total = total + int(s.get("mark"))
-        if (int(s.get("mark")) < minn): minn = int(s.get("mark"))
-        if (int(s.get("mark")) > maxx): maxx = int(s.get("mark"))
-
-    # if minn or maxx is still None then no students had a mark
-    # if (minn == None): minn = 0
-    # if (maxx == None): maxx = 0
-    average = total/i
+    all_marks = [s["mark"] for s in students_list if s.get("mark") is not None]
+    #average = sum(all_marks)/len(all_marks)
+    if not all_marks: return 404
     stats = {
-        "count": i,
-        "average": average,
-        "min": minn,
-        "max": maxx
+        "count": len(all_marks),
+        "average": sum(all_marks) / len(all_marks),
+        "min": min(all_marks),
+        "max": max(all_marks),
     }
     return jsonify(stats), 200  # replace with your implementation
 
