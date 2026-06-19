@@ -70,30 +70,35 @@ def get_stats():
     return: An object with the stats (count, average, min, max)
     """
     all_students = get_all_students() # either is None or not None
-    num_students = len(all_students)
-    # mini = all_students(min) i dont think thisll work
-    # maxi = all_students(max)
+    if (all_students is None): return 404
+
+    # check if there is a student with a mark
+    i = 0
+    for s in all_students and int(s.get("mark")) is not None:
+        i += 1
+
+    if (i == 0): return 404
+
     average = 0
-    minn = None # placeholder value
-    maxx = None
-    #i = 0
-    for s in all_students and s.get("mark") is not None:
-        total = total + s.get("mark")
-        if (s.get("mark") < minn): minn = s.get("mark")
-        if (s.get("mark") > minn): maxx = s.get("mark")
-        #i += 1
+    total = 0
+    minn = all_students[0].get("mark") # placeholder value
+    maxx = 0
+    for s in all_students and int(s.get("mark")) is not None:
+        total = total + int(s.get("mark"))
+        if (int(s.get("mark")) < minn): minn = int(s.get("mark"))
+        if (int(s.get("mark")) > maxx): maxx = int(s.get("mark"))
 
     # if minn or maxx is still None then no students had a mark
     # if (minn == None): minn = 0
     # if (maxx == None): maxx = 0
-    average = total/num_students
+    average = total/i
     stats = {
-        "count": num_students,
+        "count": i,
         "average": average,
         "min": minn,
         "max": maxx
     }
-    return jsonify(stats)  # replace with your implementation
+    return jsonify(stats), 200  # replace with your implementation
 
 
 @app.route("/")
