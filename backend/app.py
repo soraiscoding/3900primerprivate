@@ -66,52 +66,34 @@ def delete_student(student_id):
 @app.route("/stats")
 def get_stats():
     """
-    Diagnostic route to catch and print errors
+    Route to show the stats of all student marks 
+    return: An object with the stats (count, average, min, max)
     """
-    try:
-        all_students = get_all_students()
-        
-        # 1. Print exactly what the database is giving us
-        print("\n=== DEBUG: DATABASE OUTPUT ===", file=sys.stderr)
-        print(f"Type of all_students: {type(all_students)}", file=sys.stderr)
-        print(f"Value of all_students: {all_students}", file=sys.stderr)
-        
-        if not all_students:
-            return jsonify({"count": 0, "average": 0, "min": None, "max": None}), 200
+    all_students = get_all_students() # either is None or not None
+    num_students = len(all_students)
+    # mini = all_students(min) i dont think thisll work
+    # maxi = all_students(max)
+    average = 0
+    minn = None # placeholder value
+    maxx = None
+    #i = 0
+    for s in all_students and s.get("mark") is not None:
+        total = total + s.get("mark")
+        if (s.get("mark") < minn): minn = s.get("mark")
+        if (s.get("mark") > minn): maxx = s.get("mark")
+        #i += 1
 
-        # 2. Print a sample student to see its structure
-        print(f"Sample student structure: {all_students[0]}", file=sys.stderr)
-        print(f"Sample student type: {type(all_students[0])}", file=sys.stderr)
-
-        # Extract marks
-        marks = [s.get("mark") for s in all_students if s.get("mark") is not None]
-        print(f"Extracted marks: {marks}", file=sys.stderr)
-        
-        if not marks:
-            return jsonify({"count": len(all_students), "average": 0, "min": None, "max": None}), 200
-
-        num_students = len(all_students)
-        total = sum(marks)
-        average = total / len(marks)
-        mini = min(marks)
-        maxi = max(marks)
-
-        return jsonify({
-            "count": num_students,
-            "average": round(average, 2),
-            "min": mini,
-            "max": maxi
-        }), 200
-
-    except Exception as e:
-        # 3. Catch ANY crash and print the exact line/reason to the terminal
-        print("\n=== DEBUG: CRASH DETECTED ===", file=sys.stderr)
-        print(f"Error Type: {type(e).__name__}", file=sys.stderr)
-        print(f"Error Message: {str(e)}", file=sys.stderr)
-        print("=============================\n", file=sys.stderr)
-        
-        return jsonify({"error": f"Server crashed: {type(e).__name__} - {str(e)}"}), 500
-
+    # if minn or maxx is still None then no students had a mark
+    # if (minn == None): minn = 0
+    # if (maxx == None): maxx = 0
+    average = total/num_students
+    stats = {
+        "count": num_students,
+        "average": average,
+        "min": minn,
+        "max": maxx
+    }
+    return jsonify(stats)  # replace with your implementation
 
 
 @app.route("/")
